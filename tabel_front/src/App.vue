@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-   табель
-   <EmployeeList></EmployeeList>
+   <router-view></router-view>
   </div>
 </template>
 
