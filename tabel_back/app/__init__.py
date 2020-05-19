@@ -1,4 +1,6 @@
 from flask import Flask
+from flask_migrate import Migrate
+import os
 from app.models import db
 from app.views import blp
 from app.admin import admin
@@ -7,17 +9,19 @@ from app.admin import admin
 def create_app(config):
     app = Flask(__name__)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///test.db"
+    app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URI")
+    app.config.from_object(config)
     app.register_blueprint(blp)
     db.init_app(app)
-
     admin.init_app(app)
+    migrate = Migrate(app, db)
 
     return app
 
 
 if __name__ == '__main__':
-    app = create_app("empty")
+    app = create_app("app.config.DebugConfig")
     with app.app_context():
         db.create_all()
 
