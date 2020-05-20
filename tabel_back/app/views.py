@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from app.models import Employee
 from app.serializer import EmployeeSchema
 
@@ -24,3 +24,10 @@ def employee(id):
     employee = Employee.query.get_or_404(id)
     serialized_data = employee_schema.dumps(employee)
     return serialized_data, 200
+
+
+@blp.route("/employees/", methods=['POST'])
+def create_employee():
+    employee = employee_schema.load(request.json)
+    employee.save()
+    return "ok", 200

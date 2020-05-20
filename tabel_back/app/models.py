@@ -29,3 +29,13 @@ class Employee(db.Model):
 
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     post = db.relationship(Post, back_populates="employees")
+
+    def __repr__(self):
+        return f"Employee<name: {self.name}, surname: {self.surname}, post: {self.post.title}>"
+
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception:
+            db.session.remove()
