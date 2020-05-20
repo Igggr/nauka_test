@@ -39,3 +39,14 @@ class Employee(db.Model):
             db.session.commit()
         except Exception:
             db.session.remove()
+
+    def copy_data(self, tmp):          # all columns, except id
+        self.name = tmp.name
+        self.surname = tmp.surname
+        self.birth_date = tmp.birth_date
+        self.is_remote = tmp.is_remote
+        self.post = tmp.post
+        self.city = tmp.city
+        self.street = tmp.street
+        self.house = tmp.house
+        self.flat = tmp.flat
