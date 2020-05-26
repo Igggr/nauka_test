@@ -24,6 +24,7 @@
 		},
         methods: {
         	deleteEmployee() {
+        		this.$store.dispatch("deleteEmployee");
 
         	},
         	addEmployee(){
@@ -40,6 +41,9 @@
         computed: {
         	employees(){
         		return this.$store.getters.employees;
+        	},
+        	selectedEmployeeId(){
+        		return this.$store.getters.selectedEmployeeId;
         	}
         },
 		components: {

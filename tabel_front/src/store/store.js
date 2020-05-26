@@ -31,7 +31,7 @@ export const store = new Vuex.Store({
 
 	},
 	mutations: {
-		setEmployyesData(state, data){
+		setEmployesData(state, data){
 			state.employees = data;
 			state.shouldUpdate = false;
 		},
@@ -52,13 +52,20 @@ export const store = new Vuex.Store({
 		loadEmployeesData(context) {
 			//context.commit("setUpdateStatus", "aaaaaaa");
 
-		    fetch('http://localhost:5000/employees/') 
+		    fetch(`${server}/employees/`) 
             .then(
             	response => response.json(),            
                 err => console.log(err)) 
             .then( 
-            	myJson => context.commit('setEmployyesData', myJson)               
+            	myJson => context.commit('setEmployesData', myJson)               
             );
+		},
+		deleteEmployee(context) {
+			let url = `${server}/${context.selectedEmployeeId}`;
+			console.log(url);
+			fetch(url,
+				{method: "DELETE"}
+			)
 		}
 
 	}
