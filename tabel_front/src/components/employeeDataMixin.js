@@ -1,22 +1,9 @@
-<template>
-	<div>
-		<div>Добавление/Редактирование profile employee {{ id }}</div>
-		{{ employeeData }}
-		<img src="" alt="employee photo">
-		<!--<input type="text" v-model="name">-->
-	</div>
-</template>
-
-<script>
-	export default {
-		computed: {
-			id(){
-				return this.$route.params.id;
-			},
-			employeeData() {
-				return this.$store.getters.getEmployeeData(this.id);
-			}, 
-			name() {
+export default {
+	computed: {
+		employeeData() {
+			return this.$store.getters.getEmployeeData(this.id);
+		},
+		name() {
 				return this.employeeData.name;
 			},
 			surname() {
@@ -38,7 +25,5 @@
 				return `г. ${this.employeeData.city}, ${this.employeeData.street} 
 				${this.employeeData.house} кв. ${this.employeeData.flat}`;
 			}
-		}
-
-	}
-</script>
+	},
+}
