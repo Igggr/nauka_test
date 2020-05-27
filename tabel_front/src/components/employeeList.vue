@@ -28,6 +28,7 @@
 
         	},
         	addEmployee(){
+                this.$store.commit('selectEmployee', -1);
         		this.$router.push('/profile/x')
         	},
         	editEmployee(){

@@ -61,10 +61,17 @@ export const store = new Vuex.Store({
             );
 		},
 		deleteEmployee(context) {
-			let url = `${server}/${context.selectedEmployeeId}`;
-			console.log(url);
+			let url = `${server}${context.getters.selectedEmployeeId}/`;
+			alert(url);
 			fetch(url,
 				{method: "DELETE"}
+			)
+		},
+		saveChangesToServer(context){
+			let url = `${server}${context.getters.selectedEmployeeId}/`;
+			alert(url);
+			fetch(url,
+				{method: "PUT"}
 			)
 		}
 
