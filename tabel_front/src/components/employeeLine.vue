@@ -15,6 +15,7 @@
 
 <script>
 
+   
 	import employeeDataMixin from './employeeDataMixin.js';
 
 	export default {

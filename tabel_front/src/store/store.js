@@ -15,12 +15,16 @@ let employees = [
 export const store = new Vuex.Store({
 	state: {
 		employees: [], //employees,
+		posts: [],
 		shouldUpdate: true,
 		selectedEmployeeId: -1
 	},
 	getters: {
 		employees(state){
 			return state.employees;
+		},
+		posts(state){
+			return state.posts;
 		},
 		selectedEmployeeId(state){
 			return state.selectedEmployeeId;
@@ -35,6 +39,9 @@ export const store = new Vuex.Store({
 			state.employees = data;
 			state.shouldUpdate = false;
 		},
+		setPostsData(state, data){
+			state.posts = data;
+		},
 		setUpdateStatus(state, status) {
 			state.shouldUpdate = status
 		},
@@ -47,17 +54,25 @@ export const store = new Vuex.Store({
 		checkUpdate(context) {
 			if (context.state.shouldUpdate) {
 				context.dispatch('loadEmployeesData');
+				context.dispatch('loadPostsData');
 			}
 		},
 		loadEmployeesData(context) {
-			//context.commit("setUpdateStatus", "aaaaaaa");
-
 		    fetch(`${server}/employees/`) 
             .then(
             	response => response.json(),            
                 err => console.log(err)) 
             .then( 
             	myJson => context.commit('setEmployesData', myJson)               
+            );
+		},
+		loadPostsData(context){
+			fetch(`${server}/posts/`) 
+            .then(
+            	response => response.json(),            
+                err => console.log(err)) 
+            .then( 
+            	myJson => context.commit('setPostsData', myJson)               
             );
 		},
 		deleteEmployee(context) {

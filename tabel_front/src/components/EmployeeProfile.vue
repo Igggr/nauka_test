@@ -1,7 +1,7 @@
 <template>
 	<div class="profile">
 		<div class="header">
-			Добавление/Редактирование profile employee {{ id }}{{ employeeData }}
+			Добавление/Редактирование profile employee {{ id }}{{ employeeData }} "{{posts}}"
 		</div>
 		 
 		<div class="photo">
@@ -25,7 +25,9 @@
 
 		<div class="post">
 		  <label>должность</label><br>
-		  <input type="text" v-model="post">
+		  <select v-model="post">
+		  	<option v-for="post in posts">{{ post.title }}</option>
+		  </select>
 		</div>
 
         <div class="city">
@@ -61,6 +63,7 @@
 </template>
 
 <script>
+	import {mapGetters} from 'vuex';
 	import employeeDataMixin from './employeeDataMixin.js';
 
 	export default {
@@ -68,7 +71,7 @@
 			id(){
 				return this.$store.getters.selectedEmployeeId;
             },
-
+			...mapGetters(["posts" ])
 		},
 		mixins: [employeeDataMixin],
 		methods: {

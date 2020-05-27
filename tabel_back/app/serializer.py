@@ -4,6 +4,7 @@ from app.models import Employee, Post
 
 
 class PostSchema(Schema):
+    id = fields.Integer()
     title = fields.String()
 
 

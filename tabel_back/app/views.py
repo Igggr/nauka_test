@@ -1,15 +1,22 @@
 from flask import Blueprint, jsonify, request
-from app.models import Employee, db
-from app.serializer import EmployeeSchema
+from app.models import Employee, Post, db
+from app.serializer import EmployeeSchema, PostSchema
 
 blp = Blueprint("blp", __name__)
 
 employees_schema = EmployeeSchema(many=True)
 employee_schema = EmployeeSchema()
+posts_schema = PostSchema(many=True)
+
 
 @blp.route('/')
 def index():
     return "main"
+
+
+@blp.route('/posts/')
+def all_posts():
+    return posts_schema.dumps(Post.query), 200
 
 
 @blp.route('/employees/')
@@ -19,9 +26,9 @@ def all_employees():
     return serialized_data, 200
 
 
-@blp.route('/employees/<int:id>/')
-def employee_details(id):
-    employee = Employee.query.get_or_404(id)
+@blp.route('/employees/<int:uid>/')
+def employee_details(uid):
+    employee = Employee.query.get_or_404(uid)
     serialized_data = employee_schema.dumps(employee)
     return serialized_data, 200
 
@@ -41,3 +48,13 @@ def update_employee(id):
     db.session.remove()                          # prevent tmp from being written in database
     employee.save()
     return "ok", 200
+
+
+@blp.route("/employees/<int:id>", methods=["DELETE"])
+def delete_employee(id):
+    print(id)
+    employee = Employee.query.get_or_404(id)
+    print(employee)
+    db.session.remove(employee)
+    db.session.commit()
+    return 'ok', 200
