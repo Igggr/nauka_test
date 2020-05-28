@@ -10,16 +10,16 @@
 
        <div class="line line-head">
          <div class="photo">Превью</div>
-         <div class="name">Имя</div>
-         <div class="surname">Фамилия</div>
-         <div class="birthdate">Дата рождения</div>
-         <div class="age">Возраст</div>
-         <div class="post">Должность</div>
-         <div class="is_remote">Удаленная работа</div>
+         <div class="name" @click="setSortStrategy('name')">Имя<span class="sort-arrow">↕</span></div>
+         <div class="surname" @click="setSortStrategy('surname')">Фамилия<span class="sort-arrow">↕</span></div>
+         <div class="birthdate" @click="setSortStrategy('birth_date')">Дата <span class="sort-arrow">↕</span></div>
+         <div class="age" @click="setSortStrategy('birth_date')">Возраст<span class="sort-arrow">↕</span></div>
+         <div class="post" @click="setSortStrategy('post')">Должность<span class="sort-arrow">↕</span></div>
+         <div class="is_remote" @click="setSortStrategy('is_remote')">Удаленная работа<span class="sort-arrow">↕</span></div>
          <div class="adress">Адресс проживания</div>
        </div>
 
-	   <EmployeeLine v-for="employee in this.filteredEmployees"
+	   <EmployeeLine v-for="employee in this.sortedAndFiltredEmployees"
 	        :id="employee.id"
 	        @click.native="selectEmployee(employee.id)"
 	   >
@@ -33,7 +33,7 @@
 
 	export default {
 		data() {
-			return {};
+			return { "sortStrategy": null, "sortReversed": false };
 		},
         methods: {
         	deleteEmployee() {
@@ -56,7 +56,16 @@
         	},
         	selectEmployee(id){
         		this.$store.commit('selectEmployee', id)
-        	}
+        	},
+            setSortStrategy(strategy){
+                if (this.sortStrategy === strategy) {
+                    this.sortReversed = !this.sortReversed;
+                }
+                this.sortStrategy = strategy;
+            },
+            compareEmployees(empl_1, empl_2) {
+                return empl_1[this.sortStrategy] < empl_2[this.sortStrategy];
+            }
 
         },
         computed: {
@@ -83,7 +92,20 @@
                         return e.name.toLowerCase().startsWith(s) || e.surname.toLowerCase().startsWith(s);
                     })
                 }
-            }
+            },
+            sortedAndFiltredEmployees(){
+                if (this.sortStrategy === null){
+                    return this.filteredEmployees;
+                } else {
+                    let emps =  this.filteredEmployees.sort(this.compareEmployees);
+                    if (this.sortReversed){
+                        return emps.reverse();
+                    } else {
+                        return emps;
+                    }
+                }
+
+            },
         },
 		components: {
 			EmployeeLine
@@ -101,5 +123,12 @@
     .btn-group {
         margin: 10px;
     }
+    .sort-arrow {
+        font-size: 140%;
+        font-weight: bold;
+        position: relative;
+        float: right;
+        margin-left: 2px;
+    } 
 
 </style>
