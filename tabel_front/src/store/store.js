@@ -29,7 +29,9 @@ export const store = new Vuex.Store({
         creating_new: false,    // switch between creating new and editing existing employees
 		posts: [],
 		shouldUpdate: true,
-		selectedEmployeeId: -1
+		filters: "",
+		selectedEmployeeId: -1,
+
 	},
 	getters: {
 		employees(state){

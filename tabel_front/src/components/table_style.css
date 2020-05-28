@@ -1,0 +1,32 @@
+.line {
+		display: flex;
+	}
+	.line div {
+		border-left: 1px solid black;
+		border-right: 1px solid black;
+		height: 50px;
+	}
+	.photo {
+		flex: 1;
+	}
+	.name{
+		flex: 1;
+	}
+	.surname {
+		flex: 1;
+	}
+	.birthdate {
+		flex: 1;
+	}
+	.age {
+		flex: 1;
+	}
+	.post {
+		flex: 1;
+	}
+	.is_remote {
+		flex: 1;
+	}
+	.adress {
+		flex: 3;
+	}
