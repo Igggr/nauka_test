@@ -21,12 +21,10 @@ def create_app(config):
     admin.init_app(app)
     migrate = Migrate(app, db)
 
-    return app
-
-
-if __name__ == '__main__':
-    app = create_app("app.config.DebugConfig")
     with app.app_context():
         db.create_all()
 
-    app.run()
+    return app
+
+
+app = create_app("app.config.DebugConfig")

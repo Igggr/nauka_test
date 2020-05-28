@@ -76,7 +76,8 @@
 		mixins: [employeeDataMixin],
 		methods: {
 			save(){
-				this.$store.dispatch("saveChangesToServer");
+				this.$store.dispatch("saveChangesToServer")
+				.then(() => this.$router.push({name: "all_employee"}));
 			}
 		}
 

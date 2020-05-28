@@ -10,7 +10,7 @@ import Error404 from './components/Error.vue';
 
 
 const routes = [
-  {path: '/', component: EmployeeList 
+  {path: '/', component: EmployeeList, name: "all_employee" 
   
   ,beforeEnter(from, to, next) {
   	store.dispatch('checkUpdate');

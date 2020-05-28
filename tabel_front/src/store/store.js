@@ -3,14 +3,9 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-const server = 'http://localhost:5000/'
-/*
+const server = 'http://localhost:8000/'
 
-let employees = [
-  {"id" : 1, "name": "Anton", "surname": "Bursa", "birthdate": "1983-12-10", "job_title": "manager", "remote": false, "city": "spb", "street": "Nevskiy", "house": 124, "flat": 17 },
-  {"id": 2, "name": "Pavel", "surname": "Scetov", "birthdate": "1991-12-10", "job_title": "coder", "remote": true, "city": "Moscow", "street": "Liteyniy", "house": 35, "flat": 9 }
-]
-*/
+
 
 export const store = new Vuex.Store({
 	state: {
@@ -31,6 +26,17 @@ export const store = new Vuex.Store({
 		},
 		getEmployeeData: (state, getters) => (id) => {
 			return getters.employees.filter(e => e.id === id)[0];
+		},
+		getSelectedEmployeeData(state, getters){
+			return getters.getEmployeeData(getters.selectedEmployeeId);
+		},
+		getSelectedEmployeeSerializedData(state, getters){
+			const data = getters.getSelectedEmployeeData;
+			return JSON.stringify({
+				    "name": data.name, "surname": data.surname, "birth_date": data.birth_date,
+			        "post": data.post, "is_remote": data.is_remote, 
+			        "city": data.city, "street": data.street, "house": data.house, "flat": data.flat
+		           })
 		}
 
 	},
@@ -76,18 +82,33 @@ export const store = new Vuex.Store({
             );
 		},
 		deleteEmployee(context) {
-			let url = `${server}${context.getters.selectedEmployeeId}/`;
-			alert(url);
+			let url = `${server}employees/${context.getters.selectedEmployeeId}`;
+			//alert(url);
 			fetch(url,
-				{method: "DELETE"}
-			)
+				{method: "DELETE",
+                 headers: {
+                          "Access-Control-Allow-Origin": "*",
+                          //"Content-Type": "application/json"
+                          }
+			    }
+			).then(() => context.dispatch("loadEmployeesData"));
 		},
 		saveChangesToServer(context){
-			let url = `${server}${context.getters.selectedEmployeeId}/`;
-			alert(url);
+			let url = `${server}employees/${context.getters.selectedEmployeeId}`;
+			console.log(url);
+			console.log(context.getters.getSelectedEmployeeSerializedData);
 			fetch(url,
-				{method: "PUT"}
-			)
+				{
+					method: "PUT",  
+				    headers: {
+                          "Access-Control-Allow-Origin": "*",
+                          "Content-Type": "application/json"
+                    },
+                    body: context.getters.getSelectedEmployeeSerializedData
+
+
+			    }
+			).then(() => context.dispatch("loadEmployeesData"));
 		}
 
 	}
