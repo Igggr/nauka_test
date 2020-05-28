@@ -4,3 +4,4 @@ venv
 environment.env
 __pycache__
 *.pyc
+tabel.pid

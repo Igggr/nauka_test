@@ -32,7 +32,7 @@ def all_employees():
 def create_employee():
     employee = employee_schema.load(request.json)
     employee.save()
-    return "ok", 200
+    return str(employee.id), 200
 
 
 class EmployeeView(MethodView):

@@ -1,7 +1,12 @@
 <template>
 	<div class="profile">
 		<div class="header">
-			Добавление/Редактирование profile employee {{ id }}{{ employeeData }} "{{posts}}"
+		    <span v-if="this.$store.state.creating_new">
+		    	Добавление сотрудника {{ employeeData }}
+		    </span>
+		    <span v-else>
+			    Редактирование сотрудника {{ id }}{{ employeeData }}
+			</span>
 		</div>
 		 
 		<div class="photo">
@@ -76,8 +81,23 @@
 		mixins: [employeeDataMixin],
 		methods: {
 			save(){
+				if (this.$store.state.creating_new){
+					this.uploadNewEmployee();
+				} else {
+					this.updateExistingEmployee()
+				}
+			},
+			updateExistingEmployee(){
 				this.$store.dispatch("saveChangesToServer")
 				.then(() => this.$router.push({name: "all_employee"}));
+			},
+			uploadNewEmployee(){
+				if (this.is_data_valid) {
+				    this.$store.dispatch("saveNewEmployee")
+				    .then( () => this.$router.push({name: "all_employee"}));
+			    } else {
+			    	alert("введите корректные данные")
+			    }
 			}
 		}
 

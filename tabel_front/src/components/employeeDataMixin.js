@@ -1,8 +1,8 @@
 export default {
 	computed: {
 		employeeData() {
-			if (this.id === -1) {
-				return {"flat": null, "surname": "", "post": "", "city": "", "birth_date": null, "street": "", "name": "", "id": null, "is_remote": false, "house": ""};
+			if (this.$store.state.creating_new) {
+				return this.$store.state.unsavedEmployee;
 			}
 			return this.$store.getters.getEmployeeData(this.id);
 		},
@@ -89,6 +89,10 @@ export default {
 		adress(){
 			return `г. ${this.city}, ${this.street} 
 			${this.house} кв. ${this.flat}`;
+		},
+		is_data_valid(){
+			return this.name && this.surname && this.birthdate && this.post
+			&& this.city && this.street && this.house && this.flat && !isNaN(this.flat);
 		}
 	},
 }

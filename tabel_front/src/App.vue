@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-    {{ this.$store.state }}
-    <button @click="upd">update</button>
    <router-view></router-view>
   </div>
 </template>

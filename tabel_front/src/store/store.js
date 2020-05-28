@@ -6,10 +6,27 @@ Vue.use(Vuex);
 const server = 'http://localhost:8000/'
 
 
+function defaultEmployeeData(){
+  return {"id": null, "name": null,  "surname": null, "birth_date": null,
+          "post": "", "is_remote": false,
+          "city": null, "street": null, "flat": null, "house": null};
+}
+
+
+function serializeEmployee(data){
+	return JSON.stringify({
+		"name": data.name, "surname": data.surname, "birth_date": data.birth_date,
+		"post": data.post, "is_remote": data.is_remote, 
+	     "city": data.city, "street": data.street, "house": data.house, "flat": data.flat
+	 });
+}
+
 
 export const store = new Vuex.Store({
 	state: {
 		employees: [], //employees,
+		unsavedEmployee: defaultEmployeeData(),
+        creating_new: false,    // switch between creating new and editing existing employees
 		posts: [],
 		shouldUpdate: true,
 		selectedEmployeeId: -1
@@ -32,11 +49,11 @@ export const store = new Vuex.Store({
 		},
 		getSelectedEmployeeSerializedData(state, getters){
 			const data = getters.getSelectedEmployeeData;
-			return JSON.stringify({
-				    "name": data.name, "surname": data.surname, "birth_date": data.birth_date,
-			        "post": data.post, "is_remote": data.is_remote, 
-			        "city": data.city, "street": data.street, "house": data.house, "flat": data.flat
-		           })
+			return serializeEmployee(data);
+		},
+		getNewEmployeeSerializedData(state, getters){
+			const data = state.unsavedEmployee;
+			return serializeEmployee(data);
 		}
 
 	},
@@ -53,8 +70,21 @@ export const store = new Vuex.Store({
 		},
 		selectEmployee(state, id){
 			state.selectedEmployeeId = id;
+		},
+		deleteEmployee(state, id){
+			let i = state.employees.map(item => item.id).indexOf(id); // find index of your object
+            state.employees.splice(i, 1)
+		},
+		saveNewEmployee(state, id){
+			let employee = state.unsavedEmployee;
+			employee.id = id;
+			state.employees.push(employee);
+			state.unsavedEmployee = defaultEmployeeData();
+			state.creating_new = false;
+		},
+		setCreatingStatus(state, bln) { // switch between creating new employee and editing an old one
+			state.creating_new = bln;
 		}
-
 	},
 	actions: {
 		checkUpdate(context) {
@@ -81,22 +111,26 @@ export const store = new Vuex.Store({
             	myJson => context.commit('setPostsData', myJson)               
             );
 		},
-		deleteEmployee(context) {
+		deleteSelectedEmployee(context) {  // delete from server - and then filter local store
+			context.dispatch("deleteSelectedEmployeeFromServer")
+			.then(() => context.dispatch("deleteSelectedEmployeeFromClient"));
+
+		},
+		deleteSelectedEmployeeFromServer(context) {  // from server
 			let url = `${server}employees/${context.getters.selectedEmployeeId}`;
-			//alert(url);
 			fetch(url,
 				{method: "DELETE",
                  headers: {
-                          "Access-Control-Allow-Origin": "*",
-                          //"Content-Type": "application/json"
+                          "Access-Control-Allow-Origin": "*",                       
                           }
 			    }
-			).then(() => context.dispatch("loadEmployeesData"));
+			)
+		},
+		deleteSelectedEmployeeFromClient(context){ // in order not to pull employe data from server again - just filter local store data
+			context.commit("deleteEmployee", context.getters.selectedEmployeeId);
 		},
 		saveChangesToServer(context){
 			let url = `${server}employees/${context.getters.selectedEmployeeId}`;
-			console.log(url);
-			console.log(context.getters.getSelectedEmployeeSerializedData);
 			fetch(url,
 				{
 					method: "PUT",  
@@ -105,10 +139,27 @@ export const store = new Vuex.Store({
                           "Content-Type": "application/json"
                     },
                     body: context.getters.getSelectedEmployeeSerializedData
-
-
 			    }
-			).then(() => context.dispatch("loadEmployeesData"));
+			);
+		},
+		saveNewEmployee(context){
+			context.dispatch("uploadNewEmployeeToServer")
+			.then((resp) => resp.json())
+			.then((id) =>context.commit("saveNewEmployee", id))
+			
+		},
+		uploadNewEmployeeToServer(context){
+			let url = `${server}employees/`;
+			return fetch(url,
+				{
+					method: "POST",  
+				    headers: {
+                          "Access-Control-Allow-Origin": "*",
+                          "Content-Type": "application/json"
+                    },
+                    body: context.getters.getNewEmployeeSerializedData
+			    }
+			)
 		}
 
 	}
