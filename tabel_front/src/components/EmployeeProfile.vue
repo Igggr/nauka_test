@@ -2,15 +2,20 @@
 	<div class="profile">
 		<div class="header">
 		    <span v-if="this.$store.state.creating_new">
-		    	Добавление сотрудника {{ employeeData }}
+		    	Добавление сотрудника
 		    </span>
 		    <span v-else>
-			    Редактирование сотрудника {{ id }}{{ employeeData }}
+			    Редактирование сотрудника {{ id }}
 			</span>
 		</div>
 		 
 		<div class="photo">
-		  <img src="" alt="employee photo">
+			<!--
+			<form id="photoform" action="http://localhost:8000/uploads/" method="post" enctype="multipart/form-data">
+			-->
+			  <input type="file" name="file" id="photo"><br>
+		      <img src="" alt="employee photo">
+		    <!-- </form> -->
 		</div>
 
 		<div class="name">
@@ -76,7 +81,13 @@
 			id(){
 				return this.$store.getters.selectedEmployeeId;
             },
-			...mapGetters(["posts" ])
+			...mapGetters(["posts" ]),
+			photoform(){
+				return document.getElementById('photoform');
+			},
+			photo() {
+				return document.getElementById("photo");
+			}
 		},
 		mixins: [employeeDataMixin],
 		methods: {
@@ -86,6 +97,25 @@
 				} else {
 					this.updateExistingEmployee()
 				}
+				//this.photoform.submit();
+
+				let formData = new FormData();
+				let photo = document.getElementById("photo")
+
+                formData.append("file", photo.files[0]);
+                console.log(photo)
+                console.log(photo.files)
+
+
+				fetch(`http://localhost:8000/uploads/${this.id}`, {
+					method: "POST",  
+				    headers: {
+                          "Access-Control-Allow-Origin": "*",
+                          "ConetetType": "image/jpeg",
+                    },
+                    body: formData
+			    })
+					
 			},
 			updateExistingEmployee(){
 				this.$store.dispatch("saveChangesToServer")

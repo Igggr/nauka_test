@@ -24,11 +24,12 @@ class Employee(db.Model):
 
     city = db.Column(db.String)
     street = db.Column(db.String)
-    house = db.Column(db.Integer)
+    house = db.Column(db.String)
     flat = db.Column(db.Integer)
 
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     post = db.relationship(Post, back_populates="employees")
+    photo = db.Column(db.String)
 
     def __repr__(self):
         return f"Employee<name: {self.name}, surname: {self.surname}, post: {self.post.title}>"

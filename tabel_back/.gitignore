@@ -5,3 +5,4 @@ environment.env
 __pycache__
 *.pyc
 tabel.pid
+photos

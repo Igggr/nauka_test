@@ -16,7 +16,7 @@ class EmployeeSchema(Schema):
     is_remote = fields.Boolean()
     city = fields.String()
     street = fields.String()
-    house = fields.Integer()
+    house = fields.String()
     flat = fields.Integer()
     post = fields.Pluck(PostSchema, "title")
 
