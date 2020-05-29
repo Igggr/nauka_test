@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request, redirect, url_for
 from flask import send_from_directory
+from flask import send_file
 from flask import current_app
 from werkzeug.utils import secure_filename
 import os
@@ -63,12 +64,6 @@ class EmployeeView(MethodView):
 
 blp.add_url_rule(rule="/employees/<int:uid>", view_func=EmployeeView.as_view("employee"))
 
-""""
-def allowed_file(filename):
-    ALLOWED_EXTENSIONS = ('png', 'jpg', 'jpeg', 'gif')
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-"""
 
 class EmployeePhotoView(MethodView):
     methods = ["POST", "GET"]
@@ -97,6 +92,14 @@ class EmployeePhotoView(MethodView):
             file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], new_filename))
             send_from_directory(current_app.config['UPLOAD_FOLDER'], new_filename)
         return "ok", 200
+
+    def get(self, uid):
+        image_folder = current_app.config["UPLOAD_FOLDER"]
+        employee = Employee.query.get(uid)
+        if not employee.photo:
+            return "-", 404
+        filename = os.path.join(image_folder, employee.photo)
+        return send_file(filename, mimetype='image/gif')
 
 
 blp.add_url_rule(rule="/uploads/<int:uid>", view_func=EmployeePhotoView.as_view("avatar"))
