@@ -95,6 +95,16 @@ export default {
 		is_data_valid(){
 			return this.name && this.surname && this.birthdate && this.post
 			&& this.city && this.street && this.house && this.flat && !isNaN(this.flat);
+		},
+		blob() {
+			return this.$store.state.employees_photo[this.id];  // not forget to pass id
+		},
+		photo(){
+			if (this.blob){
+			    return URL.createObjectURL(this.blob);
+			} else {
+				return "";
+			}
 		}
 	},
 }

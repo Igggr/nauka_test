@@ -12,10 +12,12 @@
 		<div class="photo">
 			<!--
 			<form id="photoform" action="http://localhost:8000/uploads/" method="post" enctype="multipart/form-data">
-			-->
-			  <input type="file" name="file" id="photo"><br>
-		      <img src="" alt="employee photo">
+			-->  
+		      <img :src="photo" alt="employee photo">
 		    <!-- </form> -->
+		</div>
+		<div class="loader">
+			<input type="file" name="file" id="photo"><br>
 		</div>
 
 		<div class="name">
@@ -85,7 +87,7 @@
 			photoform(){
 				return document.getElementById('photoform');
 			},
-			photo() {
+			photoNew() {
 				return document.getElementById("photo");
 			}
 		},
@@ -102,9 +104,9 @@
 				let formData = new FormData();
 				let photo = document.getElementById("photo")
 
-                formData.append("file", photo.files[0]);
-                console.log(photo)
-                console.log(photo.files)
+                formData.append("file", this.photoNew.files[0]);
+                //console.log(photo)
+                //console.log(photo.files)
 
 
 				fetch(`http://localhost:8000/uploads/${this.id}`, {
@@ -146,7 +148,7 @@
   	   "photo surname street"
   	   "photo birthdate house"
   	   "photo post flat"
-  	   "photo is_remote save";
+  	   "loader is_remote save";
   }
 
   .header {
@@ -154,6 +156,8 @@
   }
   .photo {
   	grid-area: photo;
+  	width: 100%;
+  	height: auto;
   }
   .name {
   	grid-area: name;

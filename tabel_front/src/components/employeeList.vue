@@ -8,6 +8,10 @@
 	     <button @click="deleteEmployee">удалить</button>
 	   </div>
 
+
+       {{ this.$store.state.employees_photo[1]}}
+
+
        <div class="line line-head">
          <div class="photo">Превью</div>
          <div class="name" @click="setSortStrategy('name')">Имя<span class="sort-arrow">↕</span></div>

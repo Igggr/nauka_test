@@ -1,6 +1,8 @@
 <template>
-	<div class="line" :class="{selected: is_selected}">
-		<div class="photo">{{ id }}</div>
+	<div class="line" :class="{selected: is_selected}" height="50px">
+		<div class="photo">
+			<img :src="photo" height="50px">
+		</div>
 		<div class="name">{{ name }}</div>
 		<div class="surname">{{ surname }}</div>
 		<div class="birthdate">{{ birthdate }}</div>

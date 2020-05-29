@@ -25,6 +25,7 @@ function serializeEmployee(data){
 export const store = new Vuex.Store({
 	state: {
 		employees: [], //employees,
+		employees_photo: [],
 		unsavedEmployee: defaultEmployeeData(),
         creating_new: false,    // switch between creating new and editing existing employees
 		posts: [],
@@ -70,6 +71,10 @@ export const store = new Vuex.Store({
 		setUpdateStatus(state, status) {
 			state.shouldUpdate = status
 		},
+		setSingleEmployeePhoto(state, {blob, id}){
+			Vue.set(state.employees_photo, id, blob);
+			console.log(state.employees_photo)
+		},
 		selectEmployee(state, id){
 			state.selectedEmployeeId = id;
 		},
@@ -102,6 +107,10 @@ export const store = new Vuex.Store({
                 err => console.log(err)) 
             .then( 
             	myJson => context.commit('setEmployesData', myJson)               
+            ).then(
+                () => {
+                	context.dispatch("loadAllEmployeesPhoto");
+                }
             );
 		},
 		loadPostsData(context){
@@ -112,6 +121,28 @@ export const store = new Vuex.Store({
             .then( 
             	myJson => context.commit('setPostsData', myJson)               
             );
+		},
+		loadSingleEmployeePhoto(context, id) {
+			//alert(`loading ${id}`)
+		    fetch(`${server}uploads/${id}`)
+		    .then( resp => {
+		    	if (resp.status === 200 ) {
+			        console.log(resp)
+			        return resp.blob()
+			    } else {
+			    	throw new Error(response.status);
+			    }
+		    }).then( blob => {
+		    	context.commit("setSingleEmployeePhoto", {blob, id});
+
+		    }).catch(() => console.log("не удалось загрузить фотку"))
+		    ;
+		},
+		loadAllEmployeesPhoto(context) {
+			//alert("loading")
+			for (let employee of context.state.employees) {	
+				context.dispatch("loadSingleEmployeePhoto", employee.id);
+			}
 		},
 		deleteSelectedEmployee(context) {  // delete from server - and then filter local store
 			context.dispatch("deleteSelectedEmployeeFromServer")

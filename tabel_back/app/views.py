@@ -85,7 +85,7 @@ class EmployeePhotoView(MethodView):
         print(file.filename)
         if file and self.allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            new_filename = f"photo_{uid}"            # we cant' keep original names - it will be more then one photo.jpg )))
+            new_filename = f"photo_{uid}.jpg"            # we cant' keep original names - it will be more then one photo.jpg )))
             employee = Employee.query.get(uid)
             employee.photo = new_filename
             employee.save()
